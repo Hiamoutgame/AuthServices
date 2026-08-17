@@ -1,0 +1,62 @@
+# AuthServices - Bản đồ dự án
+
+Mục tiêu: Học NestJS, xây dựng Identity/Auth Services.
+
+## Sơ đồ luồng (Flow Graph)
+
+```mermaid
+graph TD
+    Client((Client))
+
+    %% Routing
+    Client --> API_Gateway{API Gateway/Routes}
+
+    %% Group 1: Identity
+    API_Gateway -->|Register| Identity[Identity & Registration]
+    Identity --> CheckDuplicate(Check Email/Username)
+    CheckDuplicate --> Hashing(Bcrypt/Argon2 Hash)
+    Hashing --> SaveDB(Lưu DB - Unverified)
+    SaveDB --> Verify(Email/OTP Verify)
+    Verify --> Active(Lưu DB - Active)
+
+    %% Group 2: Authentication
+    API_Gateway -->|Login| Auth[Authentication]
+    Auth --> LocalLogin(Local: Username+Pass)
+    Auth --> OAuth2(OAuth2: Google/GitHub)
+    Auth --> Passwordless(Passwordless/MFA)
+    
+    %% Group 3: Token/Session
+    LocalLogin --> TokenMgr[Token & Session Management]
+    OAuth2 --> TokenMgr
+    Passwordless --> TokenMgr
+    TokenMgr --> CreateToken(Cấp Access/Refresh Token)
+    TokenMgr --> Refresh(Refresh Token Rotation)
+    TokenMgr --> Logout(Redis Blacklist)
+
+    %% Group 4: Account Recovery
+    API_Gateway -->|Forgot Pass| Recovery[Account Recovery]
+    Recovery --> GenToken(Tạo Reset Token)
+    GenToken --> ResetPass(Cập nhật Pass mới)
+
+    %% Group 5: Authorization
+    API_Gateway -->|Access Resource| Authorize[Authorization & Route Protection]
+    Authorize --> AuthGuard(Verify JWT)
+    AuthGuard --> RoleGuard(Check Roles/Permissions)
+    RoleGuard --> Resource(Protected Resource)
+
+    %% DB & Cache
+    Identity -.-> DB[(PostgreSQL/MySQL)]
+    Auth -.-> DB
+    TokenMgr -.-> Redis[(Redis)]
+    Recovery -.-> Redis
+```
+
+## Danh sách tài liệu chi tiết
+
+1. [Identity.md](Identity.md) - Quản lý Danh tính & Đăng ký.
+2. [Authentication.md](Authentication.md) - Xác thực & Đăng nhập (Local, OAuth2, MFA).
+3. [Session.md](Session.md) - Quản lý Phiên (Stateful/Stateless).
+4. [Token Management.md](Token Management.md) - JWT, Refresh Token, Blacklist.
+5. [Account Recovery.md](Account Recovery.md) - Khôi phục & Bảo mật (Quên/Đổi mật khẩu).
+6. [Authorization.md](Authorization.md) - Phân quyền (RBAC/ABAC).
+7. [Route Protection.md](Route Protection.md) - Guard, Strategy, Decorator trong NestJS.
