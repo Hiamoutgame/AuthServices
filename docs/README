@@ -60,3 +60,19 @@ graph TD
 5. [Account Recovery.md](Account Recovery.md) - Khôi phục & Bảo mật (Quên/Đổi mật khẩu).
 6. [Authorization.md](Authorization.md) - Phân quyền (RBAC/ABAC).
 7. [Route Protection.md](Route Protection.md) - Guard, Strategy, Decorator trong NestJS.
+
+## Cấu trúc Thư mục (Modularization)
+
+Dự án áp dụng kiến trúc Modularization của NestJS để tối đa hóa khả năng tái sử dụng (Reuse):
+
+```text
+src/
+├── config/                  # Quản lý env, config constants, Joi validation
+├── core/                    # Interfaces, generic types, base repository
+├── modules/
+│   ├── auth/                # Dynamic module: login, register, token issuance
+│   ├── identity/            # Quản lý account, credentials, hashing
+│   ├── token/               # JWT sign, verify, refresh rotation, redis blacklist
+│   ├── mail/                # Dynamic module: gửi OTP, reset link
+│   └── rbac/                # Phân quyền, guards, decorators
+```

@@ -23,7 +23,23 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Dự án AuthServices xây dựng trên NestJS với mục tiêu tối đa hóa khả năng tái sử dụng (Reuse).
+
+## Cấu trúc Thư mục (Modularization)
+
+```text
+src/
+├── config/                  # Quản lý env, config constants, Joi validation
+├── core/                    # Interfaces, generic types, base repository
+├── modules/
+│   ├── auth/                # Dynamic module: login, register, token issuance
+│   ├── identity/            # Quản lý account, credentials, hashing
+│   ├── token/               # JWT sign, verify, refresh rotation, redis blacklist
+│   ├── mail/                # Dynamic module: gửi OTP, reset link
+│   └── rbac/                # Phân quyền, guards, decorators
+```
+
+Xem tài liệu thiết kế chi tiết tại [docs/README](docs/README).
 
 ## Project setup
 
