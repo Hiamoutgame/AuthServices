@@ -9,4 +9,9 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+  @Get('check-connection')
+  checkConnection(): string {
+    const port = process.env.PORT ?? '3000';
+    return this.appService.checkConnection(port);
+  }
 }
